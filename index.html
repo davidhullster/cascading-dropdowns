@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=Array.from,Promise,Symbol,Object.setPrototypeOf,Object.getOwnPropertySymbols,Set,Math.trunc"></script>
+    <script src="https://cdn.jsdelivr.net/npm/superagent"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <link rel="stylesheet" href="style.css"> -->
+
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 12pt;
+      }
+
+      body {
+        background-color: #6d90bf;
+      }
+
+      #form1 {
+        background-color: #9eb5e4;
+        margin: 100px auto;
+        margin-top: 30px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14pt;
+        padding: 20px;
+        width: 30%;
+        min-width: 300px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      option {
+        position: relative;
+        padding: 10px;
+        width: 100%;
+        border: 1px solid #aaaaaa;
+      }
+
+      /* Mark input boxes that gets an error on validation: */
+      input.invalid {
+        background-color: #ffdddd;
+      }
+
+      /* Hide all steps by default: */
+      .tab {
+        display: none;
+      }
+
+      input {
+        background-color: #04aa6d;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 17px;
+        font-family: Raleway;
+        cursor: pointer;
+      }
+
+      form {
+        width: 250px;
+        margin-left: 20px;
+        position: relative;
+      }
+
+      button:hover {
+        opacity: 0.8;
+      }
+
+    </style>
+
+    <script>
+      (function () {
+        async function getJoke() {
+          let response = await fetch("http://api.icndb.com/jokes/random");
+          let data = await response.json();
+          return data.value;
+        }
+
+        getJoke().then((joke) => {
+          console.log(joke);
+        });
+      })();
+
+      function getBranches() {
+        // RETURN the promise
+        return fetch("http://0.0.0.0:8000/branch_list.json").then(function (
+          response
+        ) {
+          return response.json(); // Process it inside the `then`
+        });
+      }
+
+      window.onload = function () {
+        getBranches().then(function (response) {
+          branch_list = response;
+
+          var appSel = document.getElementById("app");
+          var branchSel1 = document.getElementById("branch1");
+          var branchSel2 = document.getElementById("branch2");
+          var branchSel3 = document.getElementById("branch3");
+          var branchSel4 = document.getElementById("branch4");
+          for (var x in branch_list) {
+            console.log("x is: " + x);
+            appSel.options[appSel.options.length] = new Option(x, x);
+          }
+
+          appSel.onchange = function () {
+            branchSel1.length = 1;
+            branchSel2.length = 1;
+            branchSel3.length = 1;
+            branchSel4.length = 1;
+            //display correct values
+            var y = branch_list[appSel.value];
+            for (var i in y) {
+              console.log("y is: " + y);
+              branchSel1.options[branchSel1.options.length] = new Option(
+                y[i],
+                y[i]
+              );
+              branchSel2.options[branchSel1.options.length - 1] = new Option(
+                y[i],
+                y[i]
+              );
+              branchSel3.options[branchSel1.options.length - 1] = new Option(
+                y[i],
+                y[i]
+              );
+              branchSel4.options[branchSel1.options.length - 1] = new Option(
+                y[i],
+                y[i]
+              );
+            }
+          };
+        });
+      };
+      function postRequest() {
+        lambdaUrl = "https://auditFunction";
+        data = [
+          getElementById("app"),
+          getElementById("branch1"),
+          getElementById("branch2"),
+          getElementById("branch3"),
+          getElementById("branch4"),
+        ];
+        requests.post(lambdaUrl, data);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Run Mendix Branch Commit Audit</h1>
+    <form name="form1" id="form1" action="postRequest()">
+      <div id="formlabel">Application Name:</div>
+      <select name="app" id="app">
+        <option value="" selected="selected">Select App</option>
+      </select>
+      <br /><br />
+      <div id="formlabel">Branch1 Name:</div>
+      <select name="branch1" id="branch1">
+        <option value="" selected="selected">Not Selected</option>
+      </select>
+      <br /><br />
+      <div id="formlabel">Branch2 Name:</div>
+      <select name="branch2" id="branch2">
+        <option value="" selected="selected">Not Selected</option>
+      </select>
+      <br /><br />
+      <div id="">Branch3 Name:</div>
+      <select name="branch3" id="branch3">
+        <option value="" selected="selected">Not Selected</option>
+      </select>
+      <br /><br />
+      <div id="formlabel">Branch4 Name:</div>
+      <select name="branch4" id="branch4">
+        <option value="" selected="selected">Not Selected</option>
+      </select>
+      <br /><br />
+      <input type="submit" value="Submit" />
+    </form>
+  </body>
+</html>

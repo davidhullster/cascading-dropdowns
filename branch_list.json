@@ -1,0 +1,15 @@
+{
+    "app1": [
+        "trunk",
+        "branch1",
+        "branch2",
+        "branch3"
+    ],
+    "app2": [
+        "trunk",
+        "feature/farkle",
+        "feature/snap",
+        "feature/jester",
+        "feature/waggle"
+    ]
+}
